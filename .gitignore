@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Compiled JS
+dist/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+
+# Coverage
+coverage/
