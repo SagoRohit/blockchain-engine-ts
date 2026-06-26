@@ -1,10 +1,11 @@
+import { throwDeprecation } from "node:process";
 import { Hash } from "../crypto/hash";
 import { signature } from "../crypto/signature";
 import {ec as EC} from "elliptic";
 const ec = new EC("secp256k1");
 
 export class Transaction {
-    public readonly fromAddress : string;
+    public readonly fromAddress : string | null;
     public readonly toAddress : string;
     public readonly amount : number;
     public readonly timestamp : number;
@@ -12,7 +13,7 @@ export class Transaction {
     private signature? : string;
 
     constructor (
-        fromAddress: string, 
+        fromAddress: string | null, 
         toAddress: string, 
         amount: number
     ) {
@@ -46,5 +47,23 @@ export class Transaction {
 
         const transactionHash = this.calculateHash();
         this.signature = signature.sign(privateKey, transactionHash);
+    }
+
+    public isValid() : boolean {
+        if(this.fromAddress == null) // reward, send by system so do not have any signature
+            return true;
+        if(!this.fromAddress)
+            throw new Error("Transaction must have a sender");
+        if(!this.toAddress)
+            throw new Error("Transaction must have a receiver");
+        if(this.amount <= 0)
+            throw new Error("Transaction amont must be greater than zero");
+        if(!this.signature)
+            throw new Error("Transaction is not signed");
+        return signature.verify(
+            this.calculateHash(),
+            this.signature,
+            this.fromAddress,
+        )
     }
 }
