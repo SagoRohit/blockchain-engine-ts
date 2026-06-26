@@ -22,6 +22,7 @@
 
 import { Transaction } from "./Transaction";
 import { Hash } from "../crypto/hash";
+import { diff } from "node:util";
 
 
 export class Block {
@@ -48,7 +49,7 @@ export class Block {
         this.previousHash +
         JSON.stringify(this.transactions) +
         this.nonce;
-        
+
         return Hash.hash(data);
     }
 
@@ -58,5 +59,13 @@ export class Block {
                 return false;
         }
         return true;
+    }
+
+    public mine(difficulty : number): void {
+        const leading = "0".repeat(difficulty);
+        while(!this.hash.startsWith(leading)) {
+            this.nonce++;
+            this.hash = this.calculateHash();
+        }
     }
 }
