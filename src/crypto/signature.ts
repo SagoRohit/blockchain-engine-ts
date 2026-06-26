@@ -17,8 +17,8 @@ export class signature {
 
     public static verify(
         hash : string,
-        publicKey : string,
-        signature : string
+        signature : string,
+        publicKey : string
     ) {
         const key = ec.keyFromPublic(publicKey, 'hex'); // key object generation
         return key.verify(hash, signature); // verification
