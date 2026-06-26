@@ -1,0 +1,149 @@
+phase 0 : Building Blockchain Engine
+phase 1 : Learn Backend (NestJs)
+phase 2 : Database
+phase 3 : Frontend
+phase 4 : Connet Frontend + backend
+phase 5 : Authentication
+phase 6 : Real-Time Updates
+phase 7 : Docker & Deployment
+------------------------------------------------------------------------
+
+Phase 0 :
+
+Module 0 : Environment Setup
+Module 1 : Learn TypeScript
+Module 2 : Design the Blockchain Engine
+Module 3 : Implement the Blockchain Engine
+Module 4 : Testing                                       
+                                       
+                    ---------------------------------------------------------------------
+                                        Module 0 : Environment Setup
+                    ----------------------------------------------------------------------
+1. npm init - y 
+    initialize node project. package.json contains all the information about the project. every node project has one.
+
+2. npm install -D typescript
+    -D : --save-dev : this package is only needed while depeloping
+    => nodes_modules : where npm stores every installed packages
+
+3. npx tsc --init
+    => typescript configuration
+    => creates tsconfig.json : tells the typescript compiler how to convert .ts file into .js
+    => why we need .js? because, browser and node.js execute .js files not typescript.
+
+now we paste the following code in tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    "strict": true,
+
+    "esModuleInterop": true,
+
+    "skipLibCheck": true
+  }
+}
+here,   target          : javascript version to generate
+        module          : module system CommonJS works good with node.js
+        rootDir         : src code lives here
+        outDir          : where .js code will be written
+        strict          : Enables strict type checking to catch bugs early
+        esModuleInterop : makes importing CommonJS modules easiers
+        skipLibCheck    : speed up compilation by skipping checks on library declaration files
+    
+4. npm install -D @types/node
+    install node.js type definition. automatically typescript does not know about node.js api's like console, process, or fs
+
+
+
+                            -------------------------------------------------------
+                                        Module 1 : Learning Typescript
+                            -------------------------------------------------------
+
+Lesson 1
+Variables & Types
+        ↓
+Lesson 2
+Functions
+        ↓
+Lesson 3
+Arrays & Objects
+        ↓
+Lesson 4
+Interfaces
+        ↓
+Lesson 5
+Classes
+
+what is the diff between Interfaces and Classes???
+    Interfaces : tells us this object must have these properties
+    Classes : tells us this object has these properties AND these behaviors
+        ↓
+Lesson 6
+Inheritance
+        ↓
+Lesson 7
+Generics
+        ↓
+Lesson 8
+Modules
+        ↓
+Lesson 9
+Enums
+        ↓
+Lesson 10
+Async Programming
+
+
+                                    ---------------------------------------------
+                                                Module 2 : System Design
+                                    ---------------------------------------------
+Blockchain      has         Blocks
+Blocks          has         Transactions
+Transactions    signed by   wallets
+
+
+
+=> installing crypto-js
+    npm install crypto-js
+    npm install -D @types/crypto-js
+
+=> run index.ts:
+        npx tsc
+        node .\dist\index.js
+
+==> why we need hashing?
+        to check if the is tempered with or not.
+==> why we need signature?
+        to check who created the data.
+
+==> private key signs the Transactions
+        Transactions -> private key -> signature
+==> public key? 
+        if only varify the Transaction. 
+        Transaction + signature + public key -> valid? -> true\false
+so, 
+        private key     ->      signature
+        public key      ->      varify
+
+=> now, do we signature the entire Transaction?
+- no, we sign the hash, because the entire Transaction is large, and it will be slow to sign this. 
+so we sign the hash (which is unique for each transaction), and does our job perfectly.
+
+finally, 
+        transaction -> SHA256 -> hash -> private key -> signature
+varification, (each node get : Transaction , signature, public key)
+        transaction -> hash -> public key -> verify signature
+
+now desgin, 
+        do transaction need to know how the signature is done?
+        no, so we will use signature utility to calculate this  :       signature.ts
+
+
+        install elliptic:
+        npm install elliptic
+        npm install -D @types/elliptic
+        
