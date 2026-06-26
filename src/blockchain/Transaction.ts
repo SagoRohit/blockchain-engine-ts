@@ -1,6 +1,7 @@
 import { Hash } from "../crypto/hash";
 import { signature } from "../crypto/signature";
-
+import {ec as EC} from "elliptic";
+const ec = new EC("secp256k1");
 
 export class Transaction {
     public readonly fromAddress : string;
@@ -34,7 +35,16 @@ export class Transaction {
     // it is derived when needed.
 
     public sign (privateKey: string) : void {
-        const hash = this.calculateHash();
-        this.signature = signature.sign(privateKey, hash);
+        if(this.signature)
+            throw new Error("Transaction is already signed");
+
+        const key = ec.keyFromPrivate(privateKey);
+        const derivedPublicKey = key.getPublic('hex');
+
+        if(derivedPublicKey !== this.fromAddress)
+                throw new Error('You can not make transaction from others wallet!');
+
+        const transactionHash = this.calculateHash();
+        this.signature = signature.sign(privateKey, transactionHash);
     }
 }
