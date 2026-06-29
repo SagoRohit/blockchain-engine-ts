@@ -46,7 +46,7 @@ export class Transaction {
                 throw new Error('You can not make transaction from others wallet!');
 
         const transactionHash = this.calculateHash();
-        this.signature = signature.sign(privateKey, transactionHash);
+        this.signature = signature.sign(transactionHash, privateKey);
     }
 
     public isValid() : boolean {
