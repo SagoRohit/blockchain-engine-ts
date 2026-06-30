@@ -1,5 +1,7 @@
+import { transcode } from "node:buffer";
 import { Block } from "./Block";
 import { Transaction } from "./Transaction";
+import { INITIAL_DIFFICULTY, MINING_REWARD } from "../type/constants";
 
 export class Blockchain {
     private chain: Block [];
@@ -15,8 +17,16 @@ export class Blockchain {
             this.createGenesis()
         ];
         this.pendinTransaction = [];
-        this.difficulty = 3;
-        this.mindingReward = 100;
+        this.difficulty = INITIAL_DIFFICULTY;
+        this.mindingReward = MINING_REWARD;
+    }
+    private getPendingOutGoing(address:string): number {
+        let total = 0;
+        for(let tx of this.pendinTransaction) {
+            if(tx.fromAddress === address)
+                total += tx.amount;
+        }
+        return total;
     }
     public getLatestBlock() {
         return this.chain[this.chain.length -1];
@@ -27,6 +37,12 @@ export class Blockchain {
     ) : void {
         if(!tx.isValid())
             throw new Error("Invalid Transaction!");
+        if(tx.fromAddress === null)
+            throw new Error("Reward transactions can not be added manually!");
+        const available = this.getBalanceofAddress(tx.fromAddress) -
+                          this.getPendingOutGoing(tx.fromAddress);
+        if(available < tx.amount)
+            throw new Error("Insufficient Balance!");
         this.pendinTransaction.push(tx);
     }
 
@@ -72,5 +88,50 @@ export class Blockchain {
             }
         }
         return balance;
+    }
+
+    public getBlocks(): ReadonlyArray<Block> {
+        return [...this.chain];
+    }
+
+    public getBlock(index: number): Block|null {
+        if(index < 0 || index > this.chain.length)
+            return null;
+        return this.chain[index];
+    }
+    public getPendingTransactions():ReadonlyArray<Transaction>{
+        return [...this.pendinTransaction];
+    }
+    public getLatestBlockHeight(): number{
+        return this.chain.length - 1;
+    }
+    public getDifficulty(): number{
+        return this.difficulty;
+    }
+    public getMiningReward(): number{
+        return this.mindingReward;
+    }
+    public getTransactionsOfAddress(
+        address: string
+    ): Transaction[] {
+        const transactions: Transaction[] = [];
+        for(const block of this.chain){
+            for(const tx of block.transactions) {
+                if(tx.fromAddress === address || tx.toAddress === address)
+                    transactions.push(tx);
+            }
+        }
+        return transactions;
+    }
+    public findTransaction(
+        hash: string
+    ): Transaction | null {
+        for(const block of this.chain) {
+            for(const tx of block.transactions){
+                if(tx.calculateHash() === hash)
+                    return tx;
+            }
+        }
+        return null;
     }
 }
