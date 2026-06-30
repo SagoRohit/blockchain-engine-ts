@@ -47,4 +47,30 @@ export class Blockchain {
             )
         ]; // cleared the pending transaction list
     }
+
+    public isChainValid(): boolean {
+        for(let i=1; i<this.chain.length; i++) {
+            const current = this.chain[i];
+            const prev = this.chain[i-1];
+            if(!current.hasValidTransactions())
+                return false;
+            if(current.hash !== current.calculateHash())
+                return false;
+            if(current.previousHash !== prev.hash)
+                return false;
+        }
+        return true;
+    }
+    public getBalanceofAddress(address: string): number {
+        let balance = 0;
+        for(let block of this.chain) {
+            for(let tx of block.transactions) {
+                if(tx.fromAddress === address)
+                    balance -= tx.amount;
+                if(tx.toAddress === address)
+                    balance += tx.amount;
+            }
+        }
+        return balance;
+    }
 }
