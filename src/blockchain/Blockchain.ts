@@ -35,7 +35,7 @@ export class Blockchain {
     ): void {
         const block = new Block(
             this.pendinTransaction,
-            this.getLatestBlock().hash
+            this.getLatestBlock().getHash()
         ); // block created
         block.mine(this.difficulty); // block mined
         this.chain.push(block); // push into the block-chain
@@ -54,9 +54,9 @@ export class Blockchain {
             const prev = this.chain[i-1];
             if(!current.hasValidTransactions())
                 return false;
-            if(current.hash !== current.calculateHash())
+            if(current.getHash() !== current.calculateHash())
                 return false;
-            if(current.previousHash !== prev.hash)
+            if(current.previousHash !== prev.getHash())
                 return false;
         }
         return true;

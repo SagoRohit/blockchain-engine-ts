@@ -6,7 +6,7 @@
 import {ec as EC} from "elliptic";
 const ec = new EC("secp256k1");
 
-export class signature {
+export class Signature {
     public static sign(
         hash : string,
         privateKey : string

@@ -21,7 +21,7 @@
 */
 
 import { Transaction } from "./Transaction";
-import { Hash } from "../crypto/hash";
+import { Hash } from "../crypto/Hash";
 import { diff } from "node:util";
 
 
@@ -29,7 +29,7 @@ export class Block {
     public readonly timestamp : number;
     public readonly previousHash : string;
     public readonly transactions : Transaction [];
-    public hash : string;
+    private hash : string;
     public nonce : number;
 
     constructor  (
@@ -38,7 +38,7 @@ export class Block {
     ) {
         this.timestamp = Date.now();
         this.previousHash = prevHash;
-        this.transactions = transactions;
+        this.transactions = [...transactions];
         this.nonce = 0;
         this.hash = this.calculateHash();
     }
@@ -67,5 +67,8 @@ export class Block {
             this.nonce++;
             this.hash = this.calculateHash();
         }
+    }
+    public getHash(): string {
+        return this.hash;
     }
 }

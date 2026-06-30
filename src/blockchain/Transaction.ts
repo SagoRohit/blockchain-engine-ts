@@ -1,6 +1,6 @@
 import { throwDeprecation } from "node:process";
-import { Hash } from "../crypto/hash";
-import { signature } from "../crypto/signature";
+import { Hash } from "../crypto/Hash";
+import { Signature } from "../crypto/Signature";
 import {ec as EC} from "elliptic";
 const ec = new EC("secp256k1");
 
@@ -46,7 +46,7 @@ export class Transaction {
                 throw new Error('You can not make transaction from others wallet!');
 
         const transactionHash = this.calculateHash();
-        this.signature = signature.sign(transactionHash, privateKey);
+        this.signature = Signature.sign(transactionHash, privateKey);
     }
 
     public isValid() : boolean {
@@ -60,7 +60,7 @@ export class Transaction {
             throw new Error("Transaction amont must be greater than zero");
         if(!this.signature)
             throw new Error("Transaction is not signed");
-        return signature.verify(
+        return Signature.verify(
             this.calculateHash(),
             this.signature,
             this.fromAddress,
