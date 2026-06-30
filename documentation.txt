@@ -146,4 +146,31 @@ now desgin,
         install elliptic:
         npm install elliptic
         npm install -D @types/elliptic
-        
+
+# what is a wallet?
+stores coin? no. coins are in Blockchain. 
+wallet only proves the ownership of account/coins in the Blockchain.
+
+==> wallet has one responsibility -> managing indentity.
+here we will provide transaction to wallet and it will sign the transaction and then return the signed transaction
+
+
+==> transaction knows everything. so it should keep the responsibility of validating itself.
+it is called encapsulation.
+
+
+==> proof of work (pow):
+        nothing but changing hash to be started with a fixed number of zero;
+        but prevhash, timestamp, transaction are fixed. so we need something that may change. 
+        and it is nonce.
+
+
+
+
+
+==> jest Testing
+npm install --save-dev jest ts-jest @types/jest
+
+npx ts-jest config:init // initialize
+
+npm run test:coverage

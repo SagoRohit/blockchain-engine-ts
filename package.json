@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +15,10 @@
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
     "@types/elliptic": "^6.4.18",
+    "@types/jest": "^30.0.0",
     "@types/node": "^26.0.1",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.11",
     "typescript": "^6.0.3"
   },
   "dependencies": {
