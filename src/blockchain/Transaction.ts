@@ -66,4 +66,7 @@ export class Transaction {
             this.fromAddress,
         )
     }
+    public getSignature(): string | undefined{
+        return this.signature;
+    }
 }
