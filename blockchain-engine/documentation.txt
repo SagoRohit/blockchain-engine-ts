@@ -174,3 +174,329 @@ npm install --save-dev jest ts-jest @types/jest
 npx ts-jest config:init // initialize
 
 npm run test:coverage
+
+
+
+
+-----------------------------------
+Backend Engineering
+-----------------------------------
+
+Part 1
+Backend Fundamentals
+        │
+        ▼
+Part 2
+HTTP & REST APIs
+        │
+        ▼
+Part 3
+NestJS Fundamentals
+        │
+        ▼
+Part 4
+Project Setup
+        │
+        ▼
+Part 5
+Dependency Injection
+        │
+        ▼
+Part 6
+Controllers
+        │
+        ▼
+Part 7
+Services
+        │
+        ▼
+Part 8
+Integrate Blockchain Engine
+        │
+        ▼
+Part 9
+DTOs & Validation
+        │
+        ▼
+Part 10
+Error Handling
+        │
+        ▼
+Part 11
+Swagger Documentation
+        │
+        ▼
+Part 12
+Testing the Backend APIs
+
+
+API : Application Programming Interface
+
+
+An HTTP request contains followings:
+1. method
+2. path
+3. header
+4.body (sometimes)
+
+1. method:
+ GET -> read
+ POST -> create
+ PUT -> Update
+ DELETE -> Delete
+
+ 2. path
+ GET /wallets/abc123/balance
+
+ 3. header
+ extra information about the request.
+ e.g., Content-Type: application/json --> The request body is json
+
+ HTTP Response:
+ e.g.,
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "balance": 150
+}
+| Code | Meaning                                |
+| ---: | -------------------------------------- |
+|  200 | Success                                |
+|  201 | Resource created                       |
+|  400 | Bad request (client sent invalid data) |
+|  401 | Unauthorized                           |
+|  404 | Resource not found                     |
+|  500 | Internal server error                  |
+
+
+Controller:
+1. receive request
+2. extract data from request
+3. call the appropriate Service
+4. return the Response.
+
+Service:
+contains business logic
+1. create a wallet
+2. submit transaction
+3. mine pending transaction
+4. calculate a wallet balance
+
+module:
+groups related Functionallity together
+
+Wallet Module
+ ├── Wallet Controller
+ ├── Wallet Service
+
+Blockchain Module
+ ├── Blockchain Controller
+ ├── Blockchain Service
+
+architecture:
+                 Browser
+                   │
+                   ▼
+          HTTP Request
+                   │
+                   ▼
+        BlockchainController
+                   │
+                   ▼
+        BlockchainService
+                   │
+                   ▼
+        Blockchain Engine
+                   │
+         Block • Transaction • Wallet
+
+Bootstrap functino:
+
+
+         Start Application
+
+↓
+
+Load Modules
+
+↓
+
+Create Services
+
+↓
+
+Create Controllers
+
+↓
+
+Start Server
+
+↓
+
+Ready
+
+
+
+
+main.ts = entry point of the application
+nestfactory = creates the nestjs application
+appmodule = blueprint of the application
+Bootstrap() = initializes the application
+app = represents the running application
+app.listen() = starts http server and begins accepting request
+
+
+
+app.module.ts :
+
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+
+@Module({ // decorator, metadata that tells nestjs how to build the application
+  imports: [], // what other module does this module depend on
+  controllers: [AppController], // these controllers belong to this module
+  providers: [AppService], // These classes can be created and injected where needed.
+})
+export class AppModule {}
+// appmodule is like a map
+// a container that groups everything realted to the feature
+
+
+---------------------------------
+Dependency Injection
+---------------------------------
+NestJS
+
+↓
+
+Creates AppService
+
+↓
+
+Creates AppController
+
+↓
+
+Injects AppService
+
+
+
+
+-----------------------------------
+work following
+----------------------------------
+You
+
+↓
+
+Write AppService
+
+↓
+
+Register Provider
+
+↓
+
+NestJS
+
+↓
+
+Creates Object
+
+↓
+
+Injects Object
+
+↓
+
+Controller Uses It
+
+
+nestjs -> creates Blockchain service -> Injects it -> Controller uses it
+
+
+
+The controller stays focused on handling HTTP requests, while the service encapsulates the business logic.
+
+
+
+when we start the application: 
+pnpm run start:dev
+
+↓
+
+main.ts
+
+↓
+
+NestFactory
+
+↓
+
+AppModule
+
+↓
+
+Read providers
+
+↓
+
+Create AppService
+
+↓
+
+Read controllers
+
+↓
+
+Create AppController
+
+↓
+
+Inject AppService
+
+↓
+
+Start HTTP Server
+
+
+---------------------------------------------------------------------------------------
+Start Application
+
+↓
+
+main.ts
+
+↓
+
+NestFactory.create(AppModule)
+
+↓
+
+NestJS reads AppModule
+
+↓
+
+Registers all Providers into the DI Container
+
+↓
+
+Creates instances (when needed, or eagerly depending on configuration)
+
+↓
+
+Injects them into Controllers/other Providers
+
+↓
+
+Starts HTTP Server
+
+
+
+appmodule does not create anything, it Registers what exists and DI container manages the cretion and Injection
+
+
+=> The controller receives the http request
