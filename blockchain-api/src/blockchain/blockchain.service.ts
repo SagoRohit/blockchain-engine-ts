@@ -50,4 +50,8 @@ export class BlockchainService {
             balance
         };
     }
+
+    getPendingTransactions() {
+        return this.blockchain.getPendingTransactions();
+    }
 }

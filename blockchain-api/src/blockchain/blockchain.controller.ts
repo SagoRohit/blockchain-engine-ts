@@ -37,5 +37,10 @@ export class BlockchainController {
         return this.blockchainService.getBalance(address);
     }
 
+    @Get('pending-transactions')
+    getPendingTransactions(){
+        return this.blockchainService.getPendingTransactions();
+    }
+
 }
 
