@@ -50,5 +50,12 @@ export class BlockchainController {
         return this.blockchainService.getBlock(index);
     }
 
+    @Get('wallets/:address/transactions')
+    getTransactions(
+        @Param('address') address: string,
+    ){
+        return this.blockchainService.getTransactions(address);
+    }
+
 }
 
