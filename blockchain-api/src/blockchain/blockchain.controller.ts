@@ -9,8 +9,8 @@ export class BlockchainController {
     ){}
 
     @Get()
-    getBlockchain(): string {
-        return this.blockchainService.getMessage();
+    getBlockchain() {
+        return this.blockchainService.getBlockChain();
     }
 }
 
