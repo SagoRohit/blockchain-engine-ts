@@ -57,5 +57,21 @@ export class BlockchainController {
         return this.blockchainService.getTransactions(address);
     }
 
+    @Get('transaction/:hash')
+    getTransaction(
+        @Param('hash') hash: string,
+    ) {
+        return this.blockchainService.getTransaction(hash);
+    }
+
+    @Get('info')
+    getInfo() {
+        return this.blockchainService.getInfo();
+    }
+
+    @Get('validate')
+    isvalid() {
+        return this.blockchainService.validate();
+    }
 }
 

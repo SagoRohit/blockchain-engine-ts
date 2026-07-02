@@ -68,7 +68,27 @@ export class BlockchainService {
         const wallet = this.walletService.getWallet(address);
         if(!wallet)
             throw new Error("Wallet not found!");
-        
+
         return this.blockchain.getTransactionsOfAddress(address);
+    }
+
+    getTransaction(hash: string) {
+        const tx = this.blockchain.findTransaction(hash);
+        if(!tx)
+            throw new NotFoundException('Transaction not found');
+        return tx;
+    }
+
+    getInfo() {
+        return {
+            height: this.blockchain.getLatestBlockHeight(),
+            difficulty: this.blockchain.getDifficulty(),
+            miningReward: this.blockchain.getMiningReward(),
+            pendigTransactions: this.blockchain.getPendingTransactions().length
+        }
+    }
+
+    validate() {
+        return this.blockchain.isValid();
     }
 }
