@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BlockchainModule } from './blockchain/blockchain.module';
+import { WalletModule } from './wallet/wallet.module';
 
 @Module({ // decorator, metadata that tells nestjs how to build the application
-  imports: [BlockchainModule], // what other module does this module depend on
+  imports: [BlockchainModule, WalletModule], // what other module does this module depend on
   controllers: [AppController], // these controllers belong to this module
   providers: [AppService], // These classes can be created and injected where needed.
 })

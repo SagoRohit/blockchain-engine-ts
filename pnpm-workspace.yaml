@@ -1,0 +1,5 @@
+packages:
+  - "blockchain-engine"
+  - "blockchain-api"
+allowBuilds:
+  unrs-resolver: true
