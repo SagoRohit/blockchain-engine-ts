@@ -2,7 +2,7 @@ import { Blockchain } from 'blockchain-engine';
 import { Block } from 'blockchain-engine'
 import { Transaction, Wallet } from 'blockchain-engine'
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { WalletService } from 'src/wallet/wallet.service';
 import { MineDto } from './dto/mine.dto';
 
@@ -53,5 +53,18 @@ export class BlockchainService {
 
     getPendingTransactions() {
         return this.blockchain.getPendingTransactions();
+    }
+
+    getBlock(index: number) {
+        const block = this.blockchain.getBlock(index);
+        if(!block)
+            throw new NotFoundException(
+                `Block ${index} not found!`,
+        )
+        return block;
+    }
+
+    getTransactions(address: string) {
+        return this.blockchain.getTransactionsOfAddress(address);
     }
 }

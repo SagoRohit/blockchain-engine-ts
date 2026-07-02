@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { BlockchainService } from './blockchain.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { MineDto } from './dto/mine.dto';
+
 
 @Controller('blockchain')
 export class BlockchainController {
@@ -40,6 +41,13 @@ export class BlockchainController {
     @Get('pending-transactions')
     getPendingTransactions(){
         return this.blockchainService.getPendingTransactions();
+    }
+
+    @Get('blocks/:index')
+    getBlock(
+        @Param('index', ParseIntPipe) index: number,
+    ) {
+        return this.blockchainService.getBlock(index);
     }
 
 }
