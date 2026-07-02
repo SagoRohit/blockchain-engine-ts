@@ -13,15 +13,4 @@
     "types": ["jest", "node"]
   }
 }
-// {
-//   "compilerOptions": {
-//     "target": "ES2022",
-//     "module": "CommonJS",
-//     "outDir": "./dist",
-//     "strict": true,
-//     "esModuleInterop": true,
-//     "skipLibCheck": true,
-//     "types": ["jest", "node"]
-//   },
-//   "include": ["src/**/*", "tests/**/*"]
-// }
+

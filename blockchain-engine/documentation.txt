@@ -500,3 +500,23 @@ appmodule does not create anything, it Registers what exists and DI container ma
 
 
 => The controller receives the http request
+
+
+
+
+---------------------------------------------
+module creation:
+npx nest g module blockchain
+
+controller creation: 
+npx nest g co blockchain
+
+service creation:
+npx nest g s blockchain
+
+run server:
+pnpm run start:dev
+
+
+
+=> services are singletons
