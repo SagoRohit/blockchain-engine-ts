@@ -1,4 +1,5 @@
 import { Blockchain } from 'blockchain-engine';
+import { Block } from 'blockchain-engine'
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -8,7 +9,7 @@ export class BlockchainService {
         this.blockchain = new Blockchain();
     }
 
-    getBlockChain(): Blockchain {
-        return this.blockchain;
+    getBlocks(): Block[] {
+        return this.blockchain.getBlocks();
     }
 }

@@ -8,9 +8,9 @@ export class BlockchainController {
         private readonly blockchainService: BlockchainService
     ){}
 
-    @Get()
+    @Get('/blocks')
     getBlockchain() {
-        return this.blockchainService.getBlockChain();
+        return this.blockchainService.getBlocks();
     }
 }
 
