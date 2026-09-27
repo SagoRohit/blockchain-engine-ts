@@ -1,8 +1,10 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 import { WalletService } from './wallet.service';
-import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CurrentUser, type CurrentUserPayload } from '../auth/current-user.decorator';
 
 @ApiTags('Wallet')
+@ApiBearerAuth()
 @Controller('wallet')
 export class WalletController {
     constructor(
@@ -16,10 +18,10 @@ export class WalletController {
         description: 'invalid'
     })
     @ApiOperation({
-        summary: "Creates New Wallet"
+        summary: "Creates a new wallet owned by the authenticated user"
     })
     @Post()
-    createWallet() {
-        return this.walletservice.createWallet();
+    createWallet(@CurrentUser() user: CurrentUserPayload) {
+        return this.walletservice.createWallet(user.userId);
     }
 }
