@@ -37,6 +37,14 @@ export class WalletService {
         return { address: publicKey };
     }
 
+    async listWalletsForUser(userId: string): Promise<{ address: string; created_at: Date }[]> {
+        const result = await this.db.query<{ address: string; created_at: Date }>(
+            'SELECT address, created_at FROM wallets WHERE user_id = $1 ORDER BY created_at',
+            [userId],
+        );
+        return result.rows;
+    }
+
     async getWallet(address: string): Promise<WalletRow | null> {
         const result = await this.db.query<WalletRow>(
             'SELECT * FROM wallets WHERE address = $1',

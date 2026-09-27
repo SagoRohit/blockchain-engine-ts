@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { WalletService } from './wallet.service';
 import { ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser, type CurrentUserPayload } from '../auth/current-user.decorator';
@@ -23,5 +23,16 @@ export class WalletController {
     @Post()
     createWallet(@CurrentUser() user: CurrentUserPayload) {
         return this.walletservice.createWallet(user.userId);
+    }
+
+    @ApiOkResponse({
+        description: "Returns the authenticated user's own wallet addresses"
+    })
+    @ApiOperation({
+        summary: 'List my wallets'
+    })
+    @Get('mine')
+    listMine(@CurrentUser() user: CurrentUserPayload) {
+        return this.walletservice.listWalletsForUser(user.userId);
     }
 }
