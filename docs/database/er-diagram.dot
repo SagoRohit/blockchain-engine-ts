@@ -1,0 +1,138 @@
+// ER diagram for blockchain-api/migrations/001_init_schema.sql.
+// Regenerate after schema changes: dot -Tpdf er-diagram.dot -o er-diagram.pdf
+// (requires Graphviz: apt install graphviz / brew install graphviz)
+digraph ERD {
+    rankdir=LR;
+    graph [
+        fontname="Helvetica",
+        fontsize=13,
+        label=<<B>Blockchain Explorer &#8212; Database ER Diagram</B><BR/><FONT POINT-SIZE="11">blockchain-api / migrations/001_init_schema.sql &#8212; PostgreSQL &#8212; crow's-foot notation</FONT>>,
+        labelloc=t,
+        pad=0.15,
+        nodesep=0.8,
+        ranksep=1.1,
+        splines=spline,
+        size="17,11",
+        bgcolor=white
+    ];
+    node [shape=plain, fontname="Helvetica", fontsize=11];
+    edge [fontname="Helvetica", fontsize=10, color="#374151", labeldistance=2];
+
+    // ------------------------------------------------------------------
+    // Entities
+    // ------------------------------------------------------------------
+
+    USERS [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#374151">
+<TR><TD BGCOLOR="#2563eb" COLSPAN="3"><FONT COLOR="white" POINT-SIZE="12"><B>USERS</B></FONT></TD></TR>
+<TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT">uuid</TD><TD ALIGN="LEFT">id</TD></TR>
+<TR><TD ALIGN="LEFT"><B>UK</B></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">username</TD></TR>
+<TR><TD ALIGN="LEFT"><B>UK</B></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">email</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">password_hash</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">timestamptz</TD><TD ALIGN="LEFT">created_at</TD></TR>
+</TABLE>>];
+
+    WALLETS [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#374151">
+<TR><TD BGCOLOR="#2563eb" COLSPAN="3"><FONT COLOR="white" POINT-SIZE="12"><B>WALLETS</B></FONT></TD></TR>
+<TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT">uuid</TD><TD ALIGN="LEFT">id</TD></TR>
+<TR><TD ALIGN="LEFT"><B>FK</B></TD><TD ALIGN="LEFT">uuid</TD><TD ALIGN="LEFT">user_id</TD></TR>
+<TR><TD ALIGN="LEFT"><B>UK</B></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">address</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">encrypted_private_key</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">timestamptz</TD><TD ALIGN="LEFT">created_at</TD></TR>
+</TABLE>>];
+
+    BLOCKS [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#374151">
+<TR><TD BGCOLOR="#2563eb" COLSPAN="3"><FONT COLOR="white" POINT-SIZE="12"><B>BLOCKS</B></FONT></TD></TR>
+<TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT">uuid</TD><TD ALIGN="LEFT">id</TD></TR>
+<TR><TD ALIGN="LEFT"><B>UK</B></TD><TD ALIGN="LEFT">int</TD><TD ALIGN="LEFT">index</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">previous_hash</TD></TR>
+<TR><TD ALIGN="LEFT"><B>UK</B></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">hash</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">bigint</TD><TD ALIGN="LEFT">nonce</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">int</TD><TD ALIGN="LEFT">difficulty</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">miner_address</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">int</TD><TD ALIGN="LEFT">transaction_count</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">numeric</TD><TD ALIGN="LEFT">total_volume</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">timestamptz</TD><TD ALIGN="LEFT">mined_at</TD></TR>
+</TABLE>>];
+
+    TRANSACTIONS [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#374151">
+<TR><TD BGCOLOR="#2563eb" COLSPAN="3"><FONT COLOR="white" POINT-SIZE="12"><B>TRANSACTIONS</B></FONT></TD></TR>
+<TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT">uuid</TD><TD ALIGN="LEFT">id</TD></TR>
+<TR><TD ALIGN="LEFT"><B>UK</B></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">tx_hash</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">from_address (null)</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">to_address</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">numeric</TD><TD ALIGN="LEFT">amount</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">signature (null)</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">status</TD></TR>
+<TR><TD ALIGN="LEFT"><B>FK</B></TD><TD ALIGN="LEFT">uuid</TD><TD ALIGN="LEFT">block_id (null)</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">timestamptz</TD><TD ALIGN="LEFT">created_at</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">timestamptz</TD><TD ALIGN="LEFT">confirmed_at (null)</TD></TR>
+</TABLE>>];
+
+    WATCHLIST [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#374151">
+<TR><TD BGCOLOR="#2563eb" COLSPAN="3"><FONT COLOR="white" POINT-SIZE="12"><B>WATCHLIST</B></FONT></TD></TR>
+<TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT">uuid</TD><TD ALIGN="LEFT">id</TD></TR>
+<TR><TD ALIGN="LEFT"><B>FK,UK*</B></TD><TD ALIGN="LEFT">uuid</TD><TD ALIGN="LEFT">user_id</TD></TR>
+<TR><TD ALIGN="LEFT"><B>UK*</B></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">watched_address</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">timestamptz</TD><TD ALIGN="LEFT">created_at</TD></TR>
+</TABLE>>];
+
+    TRANSACTION_AUDIT_LOG [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#374151">
+<TR><TD BGCOLOR="#2563eb" COLSPAN="3"><FONT COLOR="white" POINT-SIZE="12"><B>TRANSACTION_AUDIT_LOG</B></FONT></TD></TR>
+<TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT">uuid</TD><TD ALIGN="LEFT">id</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">uuid</TD><TD ALIGN="LEFT">transaction_id</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">from_address (null)</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">to_address</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">numeric</TD><TD ALIGN="LEFT">amount</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">text</TD><TD ALIGN="LEFT">flagged_reason</TD></TR>
+<TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">timestamptz</TD><TD ALIGN="LEFT">logged_at</TD></TR>
+</TABLE>>];
+
+    // ------------------------------------------------------------------
+    // Real foreign-key constraints (solid lines)
+    // ------------------------------------------------------------------
+    USERS -> WALLETS [dir=both, arrowtail=tee, arrowhead=crowodot, style=solid, label="owns"];
+    USERS -> WATCHLIST [dir=both, arrowtail=tee, arrowhead=crowodot, style=solid, label="watches"];
+    BLOCKS -> TRANSACTIONS [dir=both, arrowtail=teeodot, arrowhead=crowodot, style=solid, label="confirms"];
+
+    // ------------------------------------------------------------------
+    // Address-string references: app-enforced or unenforced (dashed lines)
+    // ------------------------------------------------------------------
+    WALLETS -> TRANSACTIONS [dir=both, arrowtail=teeodot, arrowhead=crowodot, style=dashed, color="#6b7280", label="sends (from_address)"];
+    WALLETS -> TRANSACTIONS [dir=both, arrowtail=teeodot, arrowhead=crowodot, style=dashed, color="#6b7280", label="receives (to_address)"];
+    WALLETS -> BLOCKS [dir=both, arrowtail=teeodot, arrowhead=crowodot, style=dashed, color="#6b7280", label="mines (miner_address)"];
+    WALLETS -> WATCHLIST [dir=both, arrowtail=teeodot, arrowhead=crowodot, style=dashed, color="#6b7280", label="watched via (watched_address)"];
+    TRANSACTIONS -> TRANSACTION_AUDIT_LOG [dir=both, arrowtail=tee, arrowhead=teeodot, style=dashed, color="#6b7280", label="flags (transaction_id)"];
+
+    // ------------------------------------------------------------------
+    // Legend
+    // ------------------------------------------------------------------
+    subgraph cluster_legend {
+        label="Legend";
+        fontsize=11;
+        style=rounded;
+        color="#9ca3af";
+        margin=10;
+
+        legend [shape=plain, label=<
+<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="2" CELLPADDING="2">
+<TR><TD ALIGN="LEFT">&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;</TD><TD ALIGN="LEFT">Foreign key, DB-enforced</TD></TR>
+<TR><TD ALIGN="LEFT">&#8210;&#8210;&#8210;&#8210;&#8210;&#8210;</TD><TD ALIGN="LEFT">Address string, app-level only (no FK)</TD></TR>
+<TR><TD ALIGN="LEFT"> &#8212; </TD><TD ALIGN="LEFT">exactly one</TD></TR>
+<TR><TD ALIGN="LEFT"> &#8212;o </TD><TD ALIGN="LEFT">zero or one</TD></TR>
+<TR><TD ALIGN="LEFT"> &#8212;&lt; </TD><TD ALIGN="LEFT">zero or many</TD></TR>
+<TR><TD ALIGN="LEFT">PK / FK / UK</TD><TD ALIGN="LEFT">primary / foreign / unique key</TD></TR>
+<TR><TD ALIGN="LEFT">UK*</TD><TD ALIGN="LEFT">part of a composite UNIQUE(user_id, watched_address)</TD></TR>
+</TABLE>>];
+    }
+
+    { rank=same; USERS; }
+    { rank=same; WALLETS; }
+    { rank=same; BLOCKS; TRANSACTIONS; }
+    { rank=same; WATCHLIST; TRANSACTION_AUDIT_LOG; }
+}

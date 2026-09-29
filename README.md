@@ -90,6 +90,14 @@ triggers — balance validation, block-stat aggregation, large-transfer audit
 log (`003`), and the `mine_block` procedure (`004`). Every write goes through
 explicit `BEGIN`/`COMMIT`/`ROLLBACK` (`DatabaseService.withTransaction`).
 
+ER diagram (crow's-foot notation): [`docs/database/er-diagram.pdf`](docs/database/er-diagram.pdf)
+— generated from [`docs/database/er-diagram.dot`](docs/database/er-diagram.dot) via
+`dot -Tpdf er-diagram.dot -o er-diagram.pdf` (Graphviz). Solid lines are real
+`REFERENCES` foreign keys; dashed lines are wallet-address `TEXT` columns
+that are validated by application code (or the balance trigger) rather than
+a declared FK — e.g. `to_address` may legitimately point at an address with
+no registered wallet.
+
 ## Testing
 
 ```bash
