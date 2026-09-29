@@ -7,10 +7,10 @@ import { useApiGet } from '@/lib/use-api-get';
 import { apiFetch, ApiError } from '@/lib/api';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
-import { TextField } from '@/components/TextField';
+import { AddressInput } from '@/components/AddressInput';
 import { Table, Th, Td } from '@/components/table';
 import { LoadingState, ErrorState, EmptyState } from '@/components/States';
-import { formatDateTime } from '@/lib/format';
+import { formatDateTime, shortHash } from '@/lib/format';
 import type { WatchlistEntry } from '@/lib/types';
 
 export default function WatchlistPage() {
@@ -65,13 +65,7 @@ export default function WatchlistPage() {
                         </div>
                     )}
                     <div className="flex-1">
-                        <TextField
-                            label="Address to watch"
-                            name="address"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                            required
-                        />
+                        <AddressInput label="Address to watch" value={address} onChange={setAddress} required />
                     </div>
                     <Button type="submit" loading={submitting}>
                         Watch
@@ -101,7 +95,7 @@ export default function WatchlistPage() {
                                         href={`/addresses/${entry.watched_address}`}
                                         className="text-accent hover:text-accent-hover"
                                     >
-                                        {entry.watched_address}
+                                        {shortHash(entry.watched_address)}
                                     </Link>
                                 </Td>
                                 <Td>{formatDateTime(entry.created_at)}</Td>

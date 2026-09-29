@@ -12,7 +12,20 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { MineDto } from './dto/mine.dto';
 import type { CurrentUserPayload } from '../auth/current-user.decorator';
 
-const DIFFICULTY = 4;
+// No fixed DIFFICULTY constant: it's not admin-controlled, it self-adjusts
+// (see computeNextDifficulty) based on how fast recent blocks were actually
+// mined — the same mechanism real PoW chains use to stop mining reward
+// from being farmed for free by simply calling /mine in a tight loop. Each
+// +1 here is a 16x jump in average SHA-256 attempts, so it throttles hard.
+const INITIAL_DIFFICULTY = 4;
+const MIN_DIFFICULTY = 1;
+// Benchmarked with this project's crypto-js SHA-256: difficulty 4 averages
+// ~160ms, 5 averages ~1.75s, 6 averages ~28s (worst case: multiple
+// minutes). Mining runs synchronously on Node's single thread — a slow
+// mine() call freezes the whole API for every user, not just the miner —
+// so 5 is the practical ceiling here, not 6.
+const MAX_DIFFICULTY = 5;
+const TARGET_BLOCK_SECONDS = 5;
 const MINING_REWARD = 100;
 
 export interface BlockRow {
@@ -106,6 +119,7 @@ export class BlockchainService implements OnModuleInit {
         }
 
         const latest = await this.getLatestBlockRow();
+        const difficulty = await this.computeNextDifficulty(latest);
 
         const pendingResult = await this.db.query<TransactionRow>(
             "SELECT * FROM transactions WHERE status = 'pending' ORDER BY created_at",
@@ -122,7 +136,7 @@ export class BlockchainService implements OnModuleInit {
         }));
 
         const block = new Block(pendingTxs as unknown as Transaction[], latest.hash);
-        block.mine(DIFFICULTY);
+        block.mine(difficulty);
 
         const rewardTx = new Transaction(null, dto.minerAddress, MINING_REWARD);
 
@@ -135,7 +149,7 @@ export class BlockchainService implements OnModuleInit {
                     latest.hash,
                     block.getHash(),
                     block.nonce,
-                    DIFFICULTY,
+                    difficulty,
                     MINING_REWARD,
                     rewardTx.calculateHash(),
                     null,
@@ -147,7 +161,40 @@ export class BlockchainService implements OnModuleInit {
             message: 'Block Mined Successfully',
             index: latest.index + 1,
             hash: block.getHash(),
+            difficulty,
         };
+    }
+
+    // Simple retargeting: once there are at least two real (non-genesis)
+    // blocks, compare how long the latest one actually took against
+    // TARGET_BLOCK_SECONDS and nudge difficulty by 1 accordingly, clamped
+    // to [MIN_DIFFICULTY, MAX_DIFFICULTY]. This is what stops mine() from
+    // being a free money printer: farm blocks too fast and difficulty
+    // climbs, and each +1 is a 16x jump in average PoW work.
+    private async computeNextDifficulty(latest: BlockRow): Promise<number> {
+        if (latest.index < 2) {
+            return INITIAL_DIFFICULTY;
+        }
+
+        const { rows } = await this.db.query<{ mined_at: Date }>(
+            'SELECT mined_at FROM blocks WHERE index = $1',
+            [latest.index - 1],
+        );
+        const previous = rows[0];
+        if (!previous) {
+            return INITIAL_DIFFICULTY;
+        }
+
+        const elapsedSeconds =
+            (latest.mined_at.getTime() - previous.mined_at.getTime()) / 1000;
+
+        if (elapsedSeconds < TARGET_BLOCK_SECONDS / 2) {
+            return Math.min(MAX_DIFFICULTY, latest.difficulty + 1);
+        }
+        if (elapsedSeconds > TARGET_BLOCK_SECONDS * 2) {
+            return Math.max(MIN_DIFFICULTY, latest.difficulty - 1);
+        }
+        return latest.difficulty;
     }
 
     getBalance(address: string) {
@@ -212,11 +259,12 @@ export class BlockchainService implements OnModuleInit {
 
     async getInfo() {
         const latest = await this.getLatestBlockRow();
+        const difficulty = await this.computeNextDifficulty(latest);
         const { rows } = await this.db.query('SELECT * FROM get_network_stats()');
 
         return {
             height: latest.index,
-            difficulty: DIFFICULTY,
+            difficulty,
             miningReward: MINING_REWARD,
             ...rows[0],
         };

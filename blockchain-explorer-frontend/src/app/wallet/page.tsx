@@ -7,6 +7,7 @@ import { apiFetch, ApiError } from '@/lib/api';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { TextField } from '@/components/TextField';
+import { AddressInput } from '@/components/AddressInput';
 import { StatTile } from '@/components/StatTile';
 import { Table, Th, Td } from '@/components/table';
 import { LoadingState, ErrorState, EmptyState } from '@/components/States';
@@ -195,13 +196,7 @@ function SendTransactionForm({
                     </div>
                 )}
                 <div className="flex-1">
-                    <TextField
-                        label="To address"
-                        name="to"
-                        value={to}
-                        onChange={(e) => setTo(e.target.value)}
-                        required
-                    />
+                    <AddressInput label="To address" value={to} onChange={setTo} required />
                 </div>
                 <div className="w-32">
                     <TextField

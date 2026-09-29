@@ -1,7 +1,8 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, Query } from '@nestjs/common';
 import { WalletService } from './wallet.service';
 import { ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser, type CurrentUserPayload } from '../auth/current-user.decorator';
+import { Public } from '../auth/public.decorator';
 
 @ApiTags('Wallet')
 @ApiBearerAuth()
@@ -34,5 +35,20 @@ export class WalletController {
     @Get('mine')
     listMine(@CurrentUser() user: CurrentUserPayload) {
         return this.walletservice.listWalletsForUser(user.userId);
+    }
+
+    @ApiOkResponse({
+        description: 'Returns wallets whose owner\'s username matches the query'
+    })
+    @ApiOperation({
+        summary: 'Look up a recipient by username (for the send-transaction / watchlist forms)'
+    })
+    @Public()
+    @Get('search')
+    search(@Query('username') username: string) {
+        if (!username || username.trim().length < 2) {
+            return [];
+        }
+        return this.walletservice.searchByUsername(username.trim());
     }
 }

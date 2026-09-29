@@ -45,6 +45,25 @@ export class WalletService {
         return result.rows;
     }
 
+    // Backs the recipient-lookup autocomplete: usernames + addresses are
+    // already public via the analytics endpoints, so no auth is required
+    // here either. A user can own several wallets, so this returns every
+    // matching wallet, not just one per username.
+    async searchByUsername(
+        query: string,
+    ): Promise<{ username: string; address: string }[]> {
+        const result = await this.db.query<{ username: string; address: string }>(
+            `SELECT u.username, w.address
+             FROM wallets w
+             JOIN users u ON u.id = w.user_id
+             WHERE u.username ILIKE $1
+             ORDER BY u.username
+             LIMIT 10`,
+            [`%${query}%`],
+        );
+        return result.rows;
+    }
+
     async getWallet(address: string): Promise<WalletRow | null> {
         const result = await this.db.query<WalletRow>(
             'SELECT * FROM wallets WHERE address = $1',
