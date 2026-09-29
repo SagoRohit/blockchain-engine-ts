@@ -10,7 +10,7 @@ import { TextField } from '@/components/TextField';
 import { StatTile } from '@/components/StatTile';
 import { Table, Th, Td } from '@/components/table';
 import { LoadingState, ErrorState, EmptyState } from '@/components/States';
-import { formatAmount, formatDateTime } from '@/lib/format';
+import { formatAmount, formatDateTime, shortHash } from '@/lib/format';
 import type { StatementEntry, WalletSummary } from '@/lib/types';
 
 export default function WalletPage() {
@@ -19,6 +19,7 @@ export default function WalletPage() {
     const [selected, setSelected] = useState('');
     const [creating, setCreating] = useState(false);
     const [createError, setCreateError] = useState<string | null>(null);
+    const [createSuccess, setCreateSuccess] = useState<string | null>(null);
 
     const address = selected || wallets.data?.[0]?.address || '';
 
@@ -32,6 +33,7 @@ export default function WalletPage() {
     async function handleCreateWallet() {
         setCreating(true);
         setCreateError(null);
+        setCreateSuccess(null);
         try {
             const { address: newAddress } = await apiFetch<{ address: string }>('/wallet', {
                 method: 'POST',
@@ -39,6 +41,7 @@ export default function WalletPage() {
             });
             setSelected(newAddress);
             wallets.refetch();
+            setCreateSuccess(`New wallet created: ${shortHash(newAddress)} (now selected below).`);
         } catch (err) {
             setCreateError(err instanceof ApiError ? err.message : 'Something went wrong');
         } finally {
@@ -70,21 +73,22 @@ export default function WalletPage() {
             {wallets.data && wallets.data.length > 0 && (
                 <div key="wallet-details" className="contents">
                     <Card className="flex flex-col gap-3">
-                        <div className="flex flex-col gap-1">
+                        <div className="flex min-w-0 flex-col gap-1">
                             <label className="text-sm font-medium text-muted">Active wallet</label>
                             <select
                                 value={address}
                                 onChange={(e) => setSelected(e.target.value)}
-                                className="rounded-md border border-border bg-surface px-3 py-2 font-mono text-sm"
+                                className="w-full min-w-0 truncate rounded-md border border-border bg-surface px-3 py-2 font-mono text-sm"
                             >
                                 {wallets.data.map((w) => (
                                     <option key={w.address} value={w.address}>
-                                        {w.address}
+                                        {shortHash(w.address, 12, 8)}
                                     </option>
                                 ))}
                             </select>
                         </div>
                         {createError && <ErrorState message={createError} />}
+                        {createSuccess && <p className="text-sm text-success">{createSuccess}</p>}
                         <Button variant="secondary" onClick={handleCreateWallet} loading={creating}>
                             Create another wallet
                         </Button>

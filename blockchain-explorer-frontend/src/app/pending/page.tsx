@@ -9,7 +9,7 @@ import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { Table, Th, Td } from '@/components/table';
 import { LoadingState, ErrorState, EmptyState } from '@/components/States';
-import { formatAmount } from '@/lib/format';
+import { formatAmount, shortHash } from '@/lib/format';
 import type { Transaction, WalletSummary } from '@/lib/types';
 
 export default function PendingPage() {
@@ -67,22 +67,24 @@ export default function PendingPage() {
                 )}
                 {token && wallets.data && wallets.data.length > 0 && (
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-                        <div className="flex flex-1 flex-col gap-1">
+                        <div className="flex min-w-0 flex-1 flex-col gap-1">
                             <label className="text-sm font-medium text-muted">Mine reward to</label>
                             <select
                                 value={selected}
                                 onChange={(e) => setMinerAddress(e.target.value)}
-                                className="rounded-md border border-border bg-surface px-3 py-2 font-mono text-sm"
+                                className="w-full min-w-0 truncate rounded-md border border-border bg-surface px-3 py-2 font-mono text-sm"
                             >
                                 {wallets.data.map((w) => (
                                     <option key={w.address} value={w.address}>
-                                        {w.address}
+                                        {shortHash(w.address, 12, 8)}
                                     </option>
                                 ))}
                             </select>
                         </div>
-                        <Button onClick={handleMine} loading={mining}>
-                            Mine pending transactions
+                        <Button onClick={handleMine} loading={mining} className="shrink-0">
+                            {pending.data && pending.data.length > 0
+                                ? `Mine ${pending.data.length} pending transaction${pending.data.length === 1 ? '' : 's'}`
+                                : 'Mine empty block (reward only)'}
                         </Button>
                     </div>
                 )}
