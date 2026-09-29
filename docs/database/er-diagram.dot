@@ -6,7 +6,7 @@ digraph ERD {
     graph [
         fontname="Helvetica",
         fontsize=13,
-        label=<<B>Blockchain Explorer &#8212; Database ER Diagram</B><BR/><FONT POINT-SIZE="11">blockchain-api / migrations/001_init_schema.sql &#8212; PostgreSQL &#8212; crow's-foot notation</FONT>>,
+        label=<<B>GRuby &#8212; Database ER Diagram</B><BR/><FONT POINT-SIZE="11">blockchain-api / migrations/001_init_schema.sql &#8212; PostgreSQL &#8212; crow's-foot notation</FONT>>,
         labelloc=t,
         pad=0.15,
         nodesep=0.8,

@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Blockchain Explorer",
+  title: "GRuby",
   description: "A database-backed blockchain explorer, wallet, and network dashboard",
 };
 

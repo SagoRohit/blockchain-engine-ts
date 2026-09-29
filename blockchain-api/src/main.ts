@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.enableCors({ origin: process.env.FRONTEND_URL ?? 'http://localhost:3001' });
-  const config = new DocumentBuilder().setTitle('Blockchain Explorer API')
+  const config = new DocumentBuilder().setTitle('GRuby API')
   .setDescription(
     'REST API for the Blockchain Project'
   ).setVersion('1.0').build();

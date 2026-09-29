@@ -22,7 +22,7 @@ export function Navbar() {
             <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3">
                 <div className="flex flex-wrap items-center gap-5">
                     <Link href="/" className="text-sm font-semibold text-foreground">
-                        Blockchain Explorer
+                        GRuby
                     </Link>
                     <nav className="flex flex-wrap gap-4 text-sm text-muted">
                         {LINKS.map((link) => (
